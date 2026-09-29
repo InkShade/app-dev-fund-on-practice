@@ -22,6 +22,8 @@
         <jacoco.version>0.8.15</jacoco.version>
         <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
         <jacoco.minimum.line.coverage>0.80</jacoco.minimum.line.coverage>
+        <!-- Filled in by the JaCoCo agent; empty default keeps @{argLine} valid when JaCoCo is skipped -->
+        <argLine/>
         <!-- Lets CI run unit and integration tests in separate stages -->
         <skipUnitTests>false</skipUnitTests>
 
@@ -85,11 +87,25 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
+            <!-- Exposes ${org.mockito:mockito-core:jar} so Mockito can be attached as a proper Java agent -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Unit tests: *Test.java -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
                     <skipTests>${skipUnitTests}</skipTests>
                     <excludes>
                         <exclude>**/*IT.java</exclude>
@@ -102,6 +118,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar} -Xshare:off</argLine>
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
