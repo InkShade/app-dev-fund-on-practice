@@ -190,7 +190,8 @@ By default the job builds this local clone. To build from GitHub instead, start 
 ## Continuous integration: GitHub Actions
 
 [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the same stages as the Jenkinsfile on every push to
-`main` or `feature/**` and on every pull request to `main`. The analysis goes to
+`main` and on every pull request to `main`. Feature branches are checked through their pull request, because the
+SonarQube Cloud free plan only analyses the main branch and pull requests. The analysis goes to
 [SonarQube Cloud](https://sonarcloud.io/project/overview?id=InkShade_app-dev-fund-on-practice) instead of the local
 server, and the job fails if the quality gate fails. Test reports, the JaCoCo report and the jar are attached to
 each run as artifacts.
