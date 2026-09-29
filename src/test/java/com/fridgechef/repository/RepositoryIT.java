@@ -55,6 +55,32 @@ class RepositoryIT {
                 .containsExactly("Eggs", "Milk");
         assertThat(ingredientRepository.existsByNameIgnoreCase("mILK")).isTrue();
         assertThat(ingredientRepository.existsByNameIgnoreCase("Butter")).isFalse();
+        assertThat(ingredientRepository.existsByNameIgnoreCaseAndIdNot("milk", milk.getId())).isFalse();
+        assertThat(ingredientRepository.existsByNameIgnoreCaseAndIdNot("milk", eggs.getId())).isTrue();
+    }
+
+    @Test
+    void ingredientUsageIsCountedPerTable() {
+        entityManager.persist(new Recipe("Omelette", "Quick breakfast", "Whisk and fry", 10)
+                .addIngredient(eggs, 3)
+                .addIngredient(milk, 50));
+        entityManager.persist(new Recipe("Boiled eggs", "Simple", "Boil", 10).addIngredient(eggs, 2));
+        entityManager.persist(new FridgeItem(eggs, 6, TODAY));
+        entityManager.persist(new FridgeItem(eggs, 4, TODAY.plusDays(3)));
+        entityManager.persist(new ShoppingListItem(milk, 1000));
+
+        assertThat(recipeRepository.countUsingIngredient(eggs.getId())).isEqualTo(2);
+        assertThat(fridgeItemRepository.countByIngredientId(eggs.getId())).isEqualTo(2);
+        assertThat(shoppingListItemRepository.countByIngredientId(eggs.getId())).isZero();
+        assertThat(recipeRepository.countPerIngredient())
+                .extracting(IngredientCount::getIngredientId, IngredientCount::getTotal)
+                .containsExactlyInAnyOrder(tuple(eggs.getId(), 2L), tuple(milk.getId(), 1L));
+        assertThat(fridgeItemRepository.countPerIngredient())
+                .extracting(IngredientCount::getIngredientId, IngredientCount::getTotal)
+                .containsExactly(tuple(eggs.getId(), 2L));
+        assertThat(shoppingListItemRepository.countPerIngredient())
+                .extracting(IngredientCount::getIngredientId, IngredientCount::getTotal)
+                .containsExactly(tuple(milk.getId(), 1L));
     }
 
     @Test

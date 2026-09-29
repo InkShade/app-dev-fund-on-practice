@@ -543,3 +543,41 @@ input:focus, select:focus {
     background: var(--danger-soft);
     color: var(--danger);
 }
+
+/* Ingredient catalogue */
+.row-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.button-link:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+.button-link:disabled:hover {
+    color: var(--muted);
+}
+
+.form-stacked label {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    margin-bottom: 1rem;
+    font-size: .88rem;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.hint {
+    font-size: .8rem;
+    font-weight: 400;
+    color: var(--muted);
+}
+
+a.button-link:hover {
+    color: var(--primary);
+}

@@ -39,13 +39,26 @@
                 <th>Name</th>
                 <th>Unit</th>
                 <th>Usual shelf life</th>
+                <th>Used in</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="ingredient : ${ingredients}">
+            <tr th:each="entry : ${ingredients}" th:with="ingredient=${entry.ingredient()}, usage=${entry.usage()}">
                 <td th:text="${ingredient.name()}">Milk</td>
                 <td th:text="${ingredient.unit().symbol}">ml</td>
                 <td th:text="${ingredient.shelfLifeDays()} + ' days'">7 days</td>
+                <td th:classappend="${!usage.isUsed()} ? 'muted'"
+                    th:text="${usage.isUsed()} ? ${usage.summary()} : 'not used'">2 recipes, 1 fridge item</td>
+                <td class="actions">
+                    <div class="row-actions">
+                        <a class="button-link" th:href="@{/ingredients/{id}/edit(id=${ingredient.id()})}">Edit</a>
+                        <form th:action="@{/ingredients/{id}/delete(id=${ingredient.id()})}" method="post">
+                            <button type="submit" class="button-link" th:disabled="${usage.isUsed()}"
+                                    th:title="${usage.isUsed()} ? 'Used in ' + ${usage.summary()} + ', so it cannot be deleted' : 'Delete'">Delete</button>
+                        </form>
+                    </div>
+                </td>
             </tr>
             </tbody>
         </table>

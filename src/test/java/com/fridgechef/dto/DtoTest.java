@@ -73,6 +73,24 @@ class DtoTest {
         assertThat(view.expiryLabel()).isEqualTo(expected);
     }
 
+    @Test
+    void ingredientUsageSummarisesNonZeroCounts() {
+        assertThat(new IngredientUsage(0, 0, 0).isUsed()).isFalse();
+        assertThat(new IngredientUsage(0, 0, 0).summary()).isEqualTo("nothing");
+        assertThat(new IngredientUsage(1, 0, 2).isUsed()).isTrue();
+        assertThat(new IngredientUsage(1, 0, 2).summary()).isEqualTo("1 recipe, 2 shopping list items");
+        assertThat(new IngredientUsage(0, 3, 0).summary()).isEqualTo("3 fridge items");
+    }
+
+    @Test
+    void ingredientFormIsPrefilledFromView() {
+        IngredientForm form = IngredientForm.from(new IngredientView(1L, "Milk", MeasureUnit.MILLILITER, 7));
+
+        assertThat(form.getName()).isEqualTo("Milk");
+        assertThat(form.getUnit()).isEqualTo(MeasureUnit.MILLILITER);
+        assertThat(form.getShelfLifeDays()).isEqualTo(7);
+    }
+
     private static RecipeMatch match(List<IngredientRequirement> requirements) {
         return new RecipeMatch(1L, "Omelette", "desc", "steps", 10, 50, 1, requirements);
     }

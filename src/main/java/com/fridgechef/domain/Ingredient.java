@@ -53,4 +53,10 @@ public class Ingredient {
     public int getShelfLifeDays() {
         return shelfLifeDays;
     }
+
+    public void update(String name, MeasureUnit unit, int shelfLifeDays) {
+        this.name = name;
+        this.unit = unit;
+        this.shelfLifeDays = shelfLifeDays;
+    }
 }

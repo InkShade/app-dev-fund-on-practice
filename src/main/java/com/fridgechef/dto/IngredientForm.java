@@ -21,6 +21,15 @@ public class IngredientForm {
     @Max(value = 3650, message = "Shelf life must be at most 3650 days")
     private int shelfLifeDays = 7;
 
+    /** Pre-filled form for editing an existing ingredient. */
+    public static IngredientForm from(IngredientView ingredient) {
+        IngredientForm form = new IngredientForm();
+        form.setName(ingredient.name());
+        form.setUnit(ingredient.unit());
+        form.setShelfLifeDays(ingredient.shelfLifeDays());
+        return form;
+    }
+
     public String getName() {
         return name;
     }
