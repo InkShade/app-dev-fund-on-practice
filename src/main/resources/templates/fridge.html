@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('My fridge')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('fridge')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="page-header">
+        <h1>My fridge</h1>
+        <form th:action="@{/fridge/discard-expired}" method="post">
+            <button type="submit" class="button button-danger">Throw away expired</button>
+        </form>
+    </div>
+
+    <section class="card">
+        <h2>Put a product in</h2>
+        <form class="form-inline" th:action="@{/fridge}" th:object="${fridgeItemForm}" method="post">
+            <label>
+                Ingredient
+                <select th:field="*{ingredientId}" required>
+                    <option value="">Choose…</option>
+                    <option th:each="ingredient : ${ingredients}"
+                            th:value="${ingredient.id()}"
+                            th:text="${ingredient.name()} + ' (' + ${ingredient.unit().symbol} + ')'">Milk (ml)</option>
+                </select>
+                <span class="field-error" th:if="${#fields.hasErrors('ingredientId')}" th:errors="*{ingredientId}"></span>
+            </label>
+            <label>
+                Quantity
+                <input type="number" step="any" min="0" th:field="*{quantity}" placeholder="e.g. 500" required>
+                <span class="field-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+            </label>
+            <label>
+                Best before <span class="muted">(optional)</span>
+                <input type="date" th:field="*{expiryDate}">
+            </label>
+            <button type="submit" class="button">Add</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <p class="muted" th:if="${#lists.isEmpty(items)}">The fridge is empty.</p>
+        <table class="table" th:unless="${#lists.isEmpty(items)}">
+            <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Best before</th>
+                <th>Freshness</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item : ${items}">
+                <td th:text="${item.ingredientName()}">Milk</td>
+                <td th:text="${item.quantityLabel()}">500 ml</td>
+                <td th:text="${#temporals.format(item.expiryDate(), 'dd MMM yyyy')}">01 Oct 2026</td>
+                <td><span th:replace="~{fragments/layout :: freshness(${item})}"></span></td>
+                <td class="actions">
+                    <form th:action="@{/fridge/{id}/delete(id=${item.id()})}" method="post">
+                        <button type="submit" class="button-link" title="Remove">Remove</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

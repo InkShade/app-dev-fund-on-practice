@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head(${match.name()})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('recipes')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <a class="back" th:href="@{/recipes}">← All recipes</a>
+    <div class="page-header">
+        <div>
+            <h1 th:text="${match.name()}">Omelette</h1>
+            <p class="muted" th:text="${match.description()}">A quick breakfast.</p>
+        </div>
+        <span class="pill pill-large" th:classappend="${match.canCook()} ? 'pill-success'"
+              th:text="${match.matchPercent()} + '% match'">100% match</span>
+    </div>
+
+    <div class="grid-2">
+        <section class="card">
+            <h2>Ingredients</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Ingredient</th>
+                    <th>Needed</th>
+                    <th>In fridge</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="requirement : ${match.requirements()}"
+                    th:classappend="${requirement.isSatisfied()} ? '' : 'row-missing'">
+                    <td>
+                        <span th:text="${requirement.ingredientName()}">Eggs</span>
+                        <span th:if="${requirement.expiringSoon()}" class="badge badge-expiring_soon">use soon</span>
+                    </td>
+                    <td th:text="${requirement.requiredLabel()}">3 pcs</td>
+                    <td th:text="${requirement.availableLabel()}">6 pcs</td>
+                    <td>
+                        <span th:if="${requirement.isSatisfied()}" class="ok">✔</span>
+                        <span th:unless="${requirement.isSatisfied()}" class="missing"
+                              th:text="'need ' + ${requirement.missingLabel()}">need 2 pcs</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="button-row">
+                <form th:action="@{/recipes/{id}/cook(id=${match.recipeId()})}" method="post">
+                    <button type="submit" class="button" th:disabled="${!match.canCook()}">🍳 Cook it</button>
+                </form>
+                <form th:unless="${match.canCook()}"
+                      th:action="@{/recipes/{id}/shopping-list(id=${match.recipeId()})}" method="post">
+                    <button type="submit" class="button button-secondary">🛒 Add missing to shopping list</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>How to cook</h2>
+            <p class="meta" th:text="'⏱ ' + ${match.cookingTimeMinutes()} + ' min'">⏱ 10 min</p>
+            <p class="instructions" th:text="${match.instructions()}">Whisk the eggs…</p>
+        </section>
+    </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
