@@ -1,7 +1,14 @@
 # FridgeChef
 
+[![CI](https://github.com/InkShade/app-dev-fund-on-practice/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/InkShade/app-dev-fund-on-practice/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=InkShade_app-dev-fund-on-practice&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=InkShade_app-dev-fund-on-practice)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=InkShade_app-dev-fund-on-practice&metric=coverage)](https://sonarcloud.io/summary/new_code?id=InkShade_app-dev-fund-on-practice)
+
 **Cook what you have, waste less.** FridgeChef is a Spring Boot web application that keeps track of the food in
 your fridge, suggests recipes you can cook right now, and uses up the products that are about to expire first.
+
+**Live demo: https://app-dev-fund-on-practice.onrender.com** (free plan: the first request after 15 idle minutes
+takes about a minute while the service wakes up)
 
 ![Dashboard](docs/images/app-dashboard.png)
 
