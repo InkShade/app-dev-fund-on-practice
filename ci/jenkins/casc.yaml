@@ -1,0 +1,71 @@
+# Jenkins configuration as code. ${...} values come from environment variables set by start-jenkins.sh.
+jenkins:
+  systemMessage: "FridgeChef CI. Configured from ci/jenkins/casc.yaml, manual changes are overwritten on restart."
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: admin
+          name: Administrator
+          password: "${JENKINS_ADMIN_PASSWORD}"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+tool:
+  jdk:
+    installations:
+      - name: jdk21
+        home: "${JDK21_HOME}"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              scope: GLOBAL
+              id: sonar-token
+              description: SonarQube analysis token
+              secret: "${SONAR_TOKEN}"
+
+unclassified:
+  location:
+    url: "http://localhost:${JENKINS_PORT}/"
+  sonarGlobalConfiguration:
+    buildWrapperEnabled: true
+    installations:
+      - name: SonarQube
+        serverUrl: "${SONAR_HOST_URL}"
+        credentialsId: sonar-token
+
+jobs:
+  - script: |
+      multibranchPipelineJob('fridgechef') {
+          displayName('FridgeChef')
+          description('Build, unit tests, integration tests, coverage and SonarQube quality gate for every branch with a Jenkinsfile.')
+          branchSources {
+              branchSource {
+                  source {
+                      git {
+                          id('fridgechef-git')
+                          remote('${FRIDGECHEF_REPO_URL}')
+                          traits {
+                              gitBranchDiscovery()
+                          }
+                      }
+                  }
+              }
+          }
+          triggers {
+              // Re-scans the repository and builds branches with new commits
+              periodicFolderTrigger {
+                  interval('5m')
+              }
+          }
+          orphanedItemStrategy {
+              discardOldItems {
+                  numToKeep(5)
+              }
+          }
+      }
