@@ -51,10 +51,6 @@ public class FridgeItem {
         return taken;
     }
 
-    public boolean isEmpty() {
-        return quantity <= 0;
-    }
-
     public Long getId() {
         return id;
     }
