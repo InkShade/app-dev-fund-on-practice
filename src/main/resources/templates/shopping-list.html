@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Shopping list')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('shopping')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <div class="page-header">
+        <h1>Shopping list</h1>
+        <form th:action="@{/shopping-list/move-to-fridge}" method="post">
+            <button type="submit" class="button">Put bought items in the fridge</button>
+        </form>
+    </div>
+
+    <section class="card">
+        <h2>Add item</h2>
+        <form class="form-inline" th:action="@{/shopping-list}" th:object="${shoppingItemForm}" method="post">
+            <label>
+                Ingredient
+                <select th:field="*{ingredientId}" required>
+                    <option value="">Choose…</option>
+                    <option th:each="ingredient : ${ingredients}"
+                            th:value="${ingredient.id()}"
+                            th:text="${ingredient.name()} + ' (' + ${ingredient.unit().symbol} + ')'">Milk (ml)</option>
+                </select>
+                <span class="field-error" th:if="${#fields.hasErrors('ingredientId')}" th:errors="*{ingredientId}"></span>
+            </label>
+            <label>
+                Quantity
+                <input type="number" step="any" min="0" th:field="*{quantity}" required>
+                <span class="field-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+            </label>
+            <button type="submit" class="button">Add</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <p class="muted" th:if="${#lists.isEmpty(items)}">Your shopping list is empty.</p>
+        <ul class="checklist" th:unless="${#lists.isEmpty(items)}">
+            <li th:each="item : ${items}" th:classappend="${item.purchased()} ? 'done'">
+                <form th:action="@{/shopping-list/{id}/toggle(id=${item.id()})}" method="post">
+                    <button type="submit" class="check" th:text="${item.purchased()} ? '☑' : '☐'"
+                            th:title="${item.purchased()} ? 'Mark as not bought' : 'Mark as bought'">☐</button>
+                </form>
+                <span class="checklist-name" th:text="${item.ingredientName()}">Milk</span>
+                <span class="muted" th:text="${item.quantityLabel()}">1000 ml</span>
+                <form th:action="@{/shopping-list/{id}/delete(id=${item.id()})}" method="post">
+                    <button type="submit" class="button-link">Remove</button>
+                </form>
+            </li>
+        </ul>
+    </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

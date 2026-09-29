@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('home')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <section class="hero">
+        <h1>What's for dinner?</h1>
+        <p>Tell FridgeChef what is in your fridge and it suggests recipes, using up the products
+            that expire first.</p>
+    </section>
+
+    <section class="stats">
+        <a class="stat" th:href="@{/fridge}">
+            <span class="stat-value" th:text="${summary.totalItems()}">0</span>
+            <span class="stat-label">products in the fridge</span>
+        </a>
+        <a class="stat stat-warning" th:href="@{/fridge}">
+            <span class="stat-value" th:text="${summary.expiringSoon()}">0</span>
+            <span class="stat-label">expiring soon</span>
+        </a>
+        <a class="stat stat-danger" th:href="@{/fridge}">
+            <span class="stat-value" th:text="${summary.expired()}">0</span>
+            <span class="stat-label">expired</span>
+        </a>
+    </section>
+
+    <div class="grid-2">
+        <section class="card">
+            <h2>Use these first</h2>
+            <p class="muted" th:if="${#lists.isEmpty(expiringItems)}">Nothing is about to expire. 🎉</p>
+            <ul class="list" th:unless="${#lists.isEmpty(expiringItems)}">
+                <li th:each="item : ${expiringItems}">
+                    <span>
+                        <strong th:text="${item.ingredientName()}">Milk</strong>
+                        <span class="muted" th:text="${item.quantityLabel()}">500 ml</span>
+                    </span>
+                    <span th:replace="~{fragments/layout :: freshness(${item})}"></span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Top suggestions</h2>
+            <p class="muted" th:if="${#lists.isEmpty(topMatches)}">
+                Add some products to <a th:href="@{/fridge}">your fridge</a> to get suggestions.
+            </p>
+            <ul class="list" th:unless="${#lists.isEmpty(topMatches)}">
+                <li th:each="match : ${topMatches}">
+                    <a th:href="@{/recipes/{id}(id=${match.recipeId()})}" th:text="${match.name()}">Omelette</a>
+                    <span class="pill" th:classappend="${match.canCook()} ? 'pill-success'"
+                          th:text="${match.matchPercent()} + '%'">100%</span>
+                </li>
+            </ul>
+            <a class="button button-secondary" th:href="@{/recipes}">See all recipes</a>
+        </section>
+    </div>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

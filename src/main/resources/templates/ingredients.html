@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments/layout :: head('Ingredients')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header('ingredients')}"></header>
+<main class="container">
+    <div th:replace="~{fragments/layout :: flash}"></div>
+
+    <h1>Ingredient catalogue</h1>
+
+    <section class="card">
+        <h2>New ingredient</h2>
+        <form class="form-inline" th:action="@{/ingredients}" th:object="${ingredientForm}" method="post">
+            <label>
+                Name
+                <input type="text" th:field="*{name}" maxlength="100" required>
+                <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </label>
+            <label>
+                Unit
+                <select th:field="*{unit}" required>
+                    <option th:each="unit : ${units}" th:value="${unit}" th:text="${unit.symbol}">g</option>
+                </select>
+                <span class="field-error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></span>
+            </label>
+            <label>
+                Shelf life, days
+                <input type="number" min="1" max="3650" th:field="*{shelfLifeDays}" required>
+                <span class="field-error" th:if="${#fields.hasErrors('shelfLifeDays')}" th:errors="*{shelfLifeDays}"></span>
+            </label>
+            <button type="submit" class="button">Add</button>
+        </form>
+    </section>
+
+    <section class="card">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Unit</th>
+                <th>Usual shelf life</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ingredient : ${ingredients}">
+                <td th:text="${ingredient.name()}">Milk</td>
+                <td th:text="${ingredient.unit().symbol}">ml</td>
+                <td th:text="${ingredient.shelfLifeDays()} + ' days'">7 days</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

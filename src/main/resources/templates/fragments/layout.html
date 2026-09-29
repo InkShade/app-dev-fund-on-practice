@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${title} + ' · FridgeChef'">FridgeChef</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="icon" th:href="@{/favicon.svg}" type="image/svg+xml">
+</head>
+<body>
+
+<header th:fragment="header(active)" class="topbar">
+    <div class="container topbar-inner">
+        <a class="brand" th:href="@{/}"><span class="brand-icon">🧊</span> FridgeChef</a>
+        <nav class="nav">
+            <a th:href="@{/}" th:classappend="${active == 'home'} ? 'active'">Dashboard</a>
+            <a th:href="@{/fridge}" th:classappend="${active == 'fridge'} ? 'active'">My fridge</a>
+            <a th:href="@{/recipes}" th:classappend="${active == 'recipes'} ? 'active'">Recipes</a>
+            <a th:href="@{/shopping-list}" th:classappend="${active == 'shopping'} ? 'active'">Shopping list</a>
+            <a th:href="@{/ingredients}" th:classappend="${active == 'ingredients'} ? 'active'">Ingredients</a>
+        </nav>
+    </div>
+</header>
+
+<div th:fragment="flash">
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}" role="status"></div>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}" role="alert"></div>
+</div>
+
+<span th:fragment="freshness(item)"
+      th:class="'badge badge-' + ${#strings.toLowerCase(item.status)}"
+      th:text="${item.expiryLabel()}">3 days left</span>
+
+<footer th:fragment="footer" class="footer">
+    <div class="container">FridgeChef · cook what you have, waste less</div>
+</footer>
+
+</body>
+</html>
