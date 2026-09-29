@@ -1,0 +1,7 @@
+# Public deployment (Render): no database console, cached templates
+spring:
+  h2:
+    console:
+      enabled: false
+  thymeleaf:
+    cache: true

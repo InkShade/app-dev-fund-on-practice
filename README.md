@@ -92,7 +92,7 @@ Configuration in `src/main/resources/application.yml`:
 | Property | Default | Meaning |
 |----------|---------|---------|
 | `fridgechef.expiring-soon-days` | `3` | A product with this many days left or fewer is *expiring soon* |
-| `server.port` | `8080` | HTTP port |
+| `server.port` | `8080` | HTTP port, overridden by the `PORT` environment variable |
 
 ## Tests and coverage
 
@@ -197,6 +197,22 @@ each run as artifacts.
 
 The workflow needs one repository secret, `SONAR_TOKEN` (*Settings → Secrets and variables → Actions*). Automatic
 Analysis must be turned off in the SonarQube Cloud project, because the workflow runs the analysis itself.
+
+## Deployment: Render
+
+The [`Dockerfile`](Dockerfile) builds the jar in a JDK image and runs it in a slim JRE image as a non-root user.
+It skips tests, because both CI pipelines already run them. The container starts with the `prod` profile
+([`application-prod.yml`](src/main/resources/application-prod.yml)): the H2 console is turned off and templates
+are cached. The JVM is limited to 75% of the container memory, so it fits into the 512 MB free plan.
+
+To deploy on [Render](https://render.com):
+
+1. *New → Web Service*, connect the GitHub repository.
+2. Language **Docker**, branch `main`, instance type **Free**. Render reads `PORT` automatically.
+3. *Create Web Service*. Every push to `main` then triggers a new deploy.
+
+On the free plan the service sleeps after 15 minutes without traffic, so the first request after that takes about
+a minute. The database lives in memory, so every restart brings back the demo data.
 
 ## Demo scenarios
 
