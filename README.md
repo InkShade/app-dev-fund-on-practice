@@ -187,6 +187,17 @@ Secrets are never stored in the repository. They are read from `~/.fridgechef-ci
 By default the job builds this local clone. To build from GitHub instead, start Jenkins with
 `FRIDGECHEF_REPO_URL=https://github.com/<user>/<repo>.git ci/jenkins/start-jenkins.sh`.
 
+## Continuous integration: GitHub Actions
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the same stages as the Jenkinsfile on every push to
+`main` or `feature/**` and on every pull request to `main`. The analysis goes to
+[SonarQube Cloud](https://sonarcloud.io/project/overview?id=InkShade_app-dev-fund-on-practice) instead of the local
+server, and the job fails if the quality gate fails. Test reports, the JaCoCo report and the jar are attached to
+each run as artifacts.
+
+The workflow needs one repository secret, `SONAR_TOKEN` (*Settings → Secrets and variables → Actions*). Automatic
+Analysis must be turned off in the SonarQube Cloud project, because the workflow runs the analysis itself.
+
 ## Demo scenarios
 
 **1. Recipe matching and cooking with FEFO**
