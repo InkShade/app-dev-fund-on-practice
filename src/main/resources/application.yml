@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: fridgechef
+  datasource:
+    url: jdbc:h2:mem:fridgechef;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: embedded
+  h2:
+    console:
+      enabled: true
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8080
+
+fridgechef:
+  # A product is "expiring soon" when it expires within this many days
+  expiring-soon-days: 3

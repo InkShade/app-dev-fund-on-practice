@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:fridgechef-test;DB_CLOSE_DELAY=-1
+  sql:
+    init:
+      # Tests create their own data; demo data is loaded only when the app runs
+      mode: never
+  h2:
+    console:
+      enabled: false
