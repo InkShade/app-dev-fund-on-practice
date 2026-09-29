@@ -29,7 +29,19 @@ FridgeChef flips the usual question "what do I want to cook?" into "what can I c
 | Recipes `/recipes` | All recipes ranked by match, with a minimum-match filter (0 / 25 / 50 / 75 / 100%) |
 | Recipe details `/recipes/{id}` | Needed vs. available per ingredient, *Cook it*, *Add missing to shopping list* |
 | Shopping list `/shopping-list` | Add items, tick them off, move purchased items to the fridge |
-| Ingredients `/ingredients` | Ingredient catalogue: unit (g / ml / pcs) and shelf life |
+| Ingredients `/ingredients` | Ingredient catalogue: unit (g / ml / pcs), shelf life and where each one is used; add, edit and delete |
+
+### Editing the ingredient catalogue
+
+Fridge products, recipes and shopping list items all point to an ingredient by its id, so the catalogue can be
+changed safely:
+
+| Change | Rule | Why |
+|--------|------|-----|
+| Rename | Always allowed, as long as the name is unique | The new name shows up in the fridge, recipes and shopping list right away |
+| Shelf life | Always allowed | Only used for products added later; best-before dates already in the fridge stay |
+| Unit | Only while the ingredient is not used anywhere | Otherwise stored quantities would change meaning, for example 200 g of cheese would become 200 ml |
+| Delete | Only while the ingredient is not used anywhere | Recipes would lose an ingredient and fridge items would point to nothing. The catalogue shows where each ingredient is used, and the database foreign keys enforce the same rule |
 
 On startup the app loads demo data: 21 ingredients, 12 recipes and 17 fridge products. Expiry dates are relative to
 today, so there are always fresh, expiring and expired products to show.
@@ -90,9 +102,9 @@ Configuration in `src/main/resources/application.yml`:
 | Integration | `*IT.java` | Failsafe (`verify` phase) | Repositories via `@DataJpaTest`; end-to-end flows via `@SpringBootTest` + MockMvc on a real H2 database; demo data loading |
 
 ```bash
-./mvnw test                          # unit tests only (85)
-./mvnw verify                        # unit + integration tests (101), JaCoCo report and coverage check
-./mvnw verify -DskipUnitTests=true   # integration tests only (16)
+./mvnw test                          # unit tests only (104)
+./mvnw verify                        # unit + integration tests (125), JaCoCo report and coverage check
+./mvnw verify -DskipUnitTests=true   # integration tests only (21)
 ```
 
 The JaCoCo report is written to `target/site/jacoco/index.html`. The build **fails** if line coverage drops below
