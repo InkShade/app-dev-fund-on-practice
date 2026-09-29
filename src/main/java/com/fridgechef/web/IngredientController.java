@@ -22,6 +22,7 @@ import jakarta.validation.Valid;
 public class IngredientController {
 
     private static final String VIEW = "ingredients";
+    private static final String INGREDIENTS_ATTRIBUTE = "ingredients";
 
     private final IngredientService ingredientService;
 
@@ -37,7 +38,7 @@ public class IngredientController {
     @GetMapping
     public String list(Model model) {
         model.addAttribute("ingredientForm", new IngredientForm());
-        model.addAttribute("ingredients", ingredientService.findAll());
+        model.addAttribute(INGREDIENTS_ATTRIBUTE, ingredientService.findAll());
         return VIEW;
     }
 
@@ -55,7 +56,7 @@ public class IngredientController {
                 bindingResult.rejectValue("name", "duplicate", ex.getMessage());
             }
         }
-        model.addAttribute("ingredients", ingredientService.findAll());
+        model.addAttribute(INGREDIENTS_ATTRIBUTE, ingredientService.findAll());
         return VIEW;
     }
 }

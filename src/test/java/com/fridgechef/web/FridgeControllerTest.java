@@ -69,7 +69,7 @@ class FridgeControllerTest {
                         .param("expiryDate", "2026-10-04"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/fridge"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "500 ml of Milk put into the fridge"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "500 ml of Milk put into the fridge"));
     }
 
     @Test
@@ -86,7 +86,7 @@ class FridgeControllerTest {
     void productCanBeRemoved() throws Exception {
         mockMvc.perform(post("/fridge/1/delete"))
                 .andExpect(redirectedUrl("/fridge"))
-                .andExpect(flash().attributeExists(FlashMessages.SUCCESS));
+                .andExpect(flash().attributeExists(FlashMessages.SUCCESS_ATTRIBUTE));
         verify(fridgeService).remove(1L);
     }
 
@@ -105,8 +105,8 @@ class FridgeControllerTest {
         when(fridgeService.discardExpired()).thenReturn(2L, 0L);
 
         mockMvc.perform(post("/fridge/discard-expired"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "Threw away 2 expired product(s)"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "Threw away 2 expired product(s)"));
         mockMvc.perform(post("/fridge/discard-expired"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "Nothing to throw away, everything is still good"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "Nothing to throw away, everything is still good"));
     }
 }

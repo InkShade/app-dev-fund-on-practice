@@ -95,7 +95,7 @@ class RecipeControllerTest {
 
         mockMvc.perform(post("/recipes/3/cook"))
                 .andExpect(redirectedUrl("/recipes/3"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS,
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE,
                         "Enjoy your Tomato pasta! The ingredients were taken from the fridge."));
     }
 
@@ -106,7 +106,7 @@ class RecipeControllerTest {
 
         mockMvc.perform(post("/recipes/3/cook"))
                 .andExpect(redirectedUrl("/recipes/3"))
-                .andExpect(flash().attribute(FlashMessages.ERROR, "Not enough ingredients: Pasta (200 g)"));
+                .andExpect(flash().attribute(FlashMessages.ERROR_ATTRIBUTE, "Not enough ingredients: Pasta (200 g)"));
     }
 
     @Test
@@ -115,8 +115,8 @@ class RecipeControllerTest {
 
         mockMvc.perform(post("/recipes/3/shopping-list"))
                 .andExpect(redirectedUrl("/recipes/3"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "1 missing ingredient(s) added to the shopping list"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "1 missing ingredient(s) added to the shopping list"));
         mockMvc.perform(post("/recipes/3/shopping-list"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "You already have everything for this recipe"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "You already have everything for this recipe"));
     }
 }

@@ -55,7 +55,7 @@ class ShoppingListControllerTest {
     void validItemIsAdded() throws Exception {
         mockMvc.perform(post("/shopping-list").param("ingredientId", "1").param("quantity", "2"))
                 .andExpect(redirectedUrl("/shopping-list"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "Added to the shopping list"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "Added to the shopping list"));
         verify(shoppingListService).add(any());
     }
 
@@ -82,8 +82,8 @@ class ShoppingListControllerTest {
         when(shoppingListService.movePurchasedToFridge()).thenReturn(0, 3);
 
         mockMvc.perform(post("/shopping-list/move-to-fridge"))
-                .andExpect(flash().attribute(FlashMessages.ERROR, "Tick the products you have bought first"));
+                .andExpect(flash().attribute(FlashMessages.ERROR_ATTRIBUTE, "Tick the products you have bought first"));
         mockMvc.perform(post("/shopping-list/move-to-fridge"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "3 product(s) moved into the fridge"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "3 product(s) moved into the fridge"));
     }
 }

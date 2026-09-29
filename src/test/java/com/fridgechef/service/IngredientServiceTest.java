@@ -64,8 +64,9 @@ class IngredientServiceTest {
     @Test
     void createRejectsDuplicateName() {
         when(ingredientRepository.existsByNameIgnoreCase("Butter")).thenReturn(true);
+        IngredientForm duplicate = form("Butter");
 
-        assertThatThrownBy(() -> ingredientService.create(form("Butter")))
+        assertThatThrownBy(() -> ingredientService.create(duplicate))
                 .isInstanceOf(DuplicateIngredientException.class)
                 .hasMessageContaining("Butter");
         verify(ingredientRepository, never()).save(any());

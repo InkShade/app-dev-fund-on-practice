@@ -56,7 +56,7 @@ class IngredientControllerTest {
                         .param("unit", "GRAM")
                         .param("shelfLifeDays", "30"))
                 .andExpect(redirectedUrl("/ingredients"))
-                .andExpect(flash().attribute(FlashMessages.SUCCESS, "Butter was added to the catalogue"));
+                .andExpect(flash().attribute(FlashMessages.SUCCESS_ATTRIBUTE, "Butter was added to the catalogue"));
     }
 
     @Test
