@@ -24,8 +24,9 @@
         <jacoco.minimum.line.coverage>0.80</jacoco.minimum.line.coverage>
         <!-- Filled in by the JaCoCo agent; empty default keeps @{argLine} valid when JaCoCo is skipped -->
         <argLine/>
-        <!-- Lets CI run unit and integration tests in separate stages -->
-        <skipUnitTests>false</skipUnitTests>
+        <!-- Lets CI run unit and integration tests in separate stages; -DskipTests still skips both -->
+        <skipTests>false</skipTests>
+        <skipUnitTests>${skipTests}</skipUnitTests>
 
         <sonar.projectKey>fridgechef</sonar.projectKey>
         <sonar.projectName>FridgeChef</sonar.projectName>
