@@ -1,0 +1,22 @@
+# Build output
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+
+# Local databases and logs
+*.db
+*.log
+data/
+
+# Sonar
+.scannerwork/
